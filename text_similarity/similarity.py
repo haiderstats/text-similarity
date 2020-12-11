@@ -1,7 +1,7 @@
 # pylint has a bug where it doesn't fine BaseModel:
 # https://github.com/samuelcolvin/pydantic/issues/1961
 # pylint: disable=no-name-in-module
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 from pydantic import BaseModel
 
@@ -20,10 +20,19 @@ class Texts(BaseModel):
             }
         }
 
-    def word_counter(self) -> Tuple[Dict[str, int], Dict[str, int]]:
+    def similarity(self) -> float:
         text1_words = word_counter(self.text1)
         text2_words = word_counter(self.text2)
-        return text1_words, text2_words
+        keys = set(list(text1_words.keys()) + list(text2_words.keys()))
+
+        vector_1 = list()
+        vector_2 = list()
+
+        for key in keys:
+            vector_1.append(text1_words.get(key, 0))
+            vector_2.append(text2_words.get(key, 0))
+
+        return cosine_similarity(vector_1, vector_2)
 
 
 def cosine_similarity(vector_1: List[int], vector_2: List[int]) -> float:
@@ -43,13 +52,12 @@ def cosine_similarity(vector_1: List[int], vector_2: List[int]) -> float:
     if denominator == 0:
         return 0.0
 
-    return numerator / denominator
+    return round(numerator / denominator, 3)
 
 
 def word_counter(text: str, ngrams: int = 3) -> Dict[str, int]:
     word_list = text.lower().translate({ord("."): " .", ord("?"): " ?"}).split(" ")
     word_list = [word for word in word_list if word not in STOP_WORDS]
-
     word_counts: Dict[str, int] = {}
     for index, word in enumerate(word_list):
         word_counts[word] = word_counts.get(word, 0) + 1
@@ -59,5 +67,4 @@ def word_counter(text: str, ngrams: int = 3) -> Dict[str, int]:
                 word_counts[word] = word_counts.get(word, 0) + 1
             except IndexError:
                 break
-
     return word_counts
