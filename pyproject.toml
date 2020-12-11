@@ -2,12 +2,16 @@
 name = "text-similarity"
 version = "0.1.0"
 description = ""
-authors = ["Humza Haider<humza@haiderstats.com>"]
+authors = ["Humza Haider <humza@haiderstats.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
 fastapi = "^0.62.0"
 uvicorn = "^0.13.0"
+
+[tool.poetry.scripts]
+text_similarity = "text_similarity.__main__:main"
+
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
