@@ -22,7 +22,7 @@ build-backend = "poetry.core.masonry.api"
 
 
 [tool.pylint.messages_control]
-disable = "C0114, C0115, C0116, C0330, R0801, R0902, C0103, W0613, W1203, fixme, not-callable"
+disable = "C0114, C0115, C0116, C0330, R0801, R0902, C0103, W0613, W1203,R0903, fixme, not-callable"
 
 [tool.pylint.format]
 max_line_length = "88"
