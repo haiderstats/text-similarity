@@ -7,7 +7,7 @@ client = TestClient(app)
 
 def test_perfect_response():
     response = client.post(
-        "/", json={"text1": "A big brown cow.", "text2": "A big brown cow."}
+        "/similarity", json={"text1": "A big brown cow.", "text2": "A big brown cow."}
     )
     assert response.status_code == 200
     assert response.json() == {"similarity": 1.0}
@@ -15,7 +15,8 @@ def test_perfect_response():
 
 def test_perfect_0_response():
     response = client.post(
-        "/", json={"text1": "A big brown cow.", "text2": "A huge purple jellyfish?"}
+        "/similarity",
+        json={"text1": "A big brown cow.", "text2": "A huge purple jellyfish?"},
     )
     assert response.status_code == 200
     assert response.json() == {"similarity": 0.0}
@@ -23,7 +24,7 @@ def test_perfect_0_response():
 
 def test_sample_questions():
     response_1_2 = client.post(
-        "/",
+        "/similarity",
         json={
             "text1": (
                 "The easiest way to earn points with Fetch Rewards is to"
@@ -46,7 +47,7 @@ def test_sample_questions():
     assert response_1_2.status_code == 200
 
     response_1_3 = client.post(
-        "/",
+        "/similarity",
         json={
             "text1": (
                 "The easiest way to earn points with Fetch Rewards is to"
@@ -72,3 +73,14 @@ def test_sample_questions():
     similarity_1_2 = response_1_2.json()
     similarity_1_3 = response_1_3.json()
     assert similarity_1_2["similarity"] > similarity_1_3["similarity"]
+
+
+def test_ngram_fail_response():
+    response = client.post(
+        "/similarity?ngram_limit=0",
+        json={
+            "text1": "A big brown cow.",
+            "text2": "A big brown cow.",
+        },
+    )
+    assert response.status_code == 422
