@@ -1,4 +1,4 @@
-FROM python:3.6-buster
+FROM python:3.6-buster as builder
 
 RUN pip install poetry
 
@@ -8,6 +8,13 @@ COPY pyproject.toml poetry.lock ./
 COPY text_similarity text_similarity
 
 RUN poetry build --format wheel
-RUN pip install --no-cache-dir dist/* && rm -rf dist
+
+FROM python:3.6-buster
+
+WORKDIR "/usr/src/app"
+
+COPY --from=builder /usr/src/app/dist/ /tmp/dist/
+
+RUN pip install --no-cache-dir /tmp/dist/* && rm -rf dist
 
 CMD ["text_similarity"]
