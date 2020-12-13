@@ -42,6 +42,5 @@ texts = {
 }
 
 response = requests.post(url, json=texts)
-print(response.status_code)
 print(response.json())
 ```
