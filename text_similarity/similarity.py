@@ -20,9 +20,9 @@ class Texts(BaseModel):
             }
         }
 
-    def similarity(self) -> float:
-        text1_words = word_counter(self.text1)
-        text2_words = word_counter(self.text2)
+    def similarity(self, ngram_limit: int) -> float:
+        text1_words = word_counter(self.text1, ngram_limit)
+        text2_words = word_counter(self.text2, ngram_limit)
         keys = set(list(text1_words.keys()) + list(text2_words.keys()))
 
         vector_1 = list()
